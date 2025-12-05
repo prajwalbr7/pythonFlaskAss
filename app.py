@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, render_template, request, redirect, url_for
 import json
-from pymoclarngo import MongoClient
+from pymongo import MongoClient
+
 
 app = Flask(__name__)
 
@@ -10,8 +11,12 @@ collection = db["users"]
 
 @app.route('/api', methods=['GET'])
 def get_data():
-    data = list(collection.find({}, {"_id": 0})) 
+    data = list(collection.find({}, {"_id": 0}))
+    with open("data.json", "w") as f:
+        json.dump(data, f, indent=4)
+
     return jsonify(data)
+
 
 @app.route("/")
 def form():
