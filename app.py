@@ -28,6 +28,25 @@ def submit_todo_item():
 
     return redirect(url_for("formTodo"))
 
+@app.route('/submittodoitem', methods=['POST'])
+def submit_todo_item():
+    data = request.get_json()
+
+    item_name = data.get("itemName")
+    item_description = data.get("itemDescription")
+
+    if not item_name or not item_description:
+        return jsonify({"message": "Missing fields"}), 400
+
+    todo = {
+        "itemName": item_name,
+        "itemDescription": item_description
+    }
+
+    collection.insert_one(todo)
+
+    return jsonify({"message": "Todo item saved successfully"}), 201
+
 @app.route('/api', methods=['GET'])
 def get_data():
     data = list(collection.find({}, {"_id": 0}))
