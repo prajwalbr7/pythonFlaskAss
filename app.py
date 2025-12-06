@@ -10,6 +10,7 @@ db = client["testdb"]
 collection = db["users"]
 collectionTD = db["TodoList"]
 
+<<<<<<< HEAD
 
 @app.route('/submittodoitem', methods=['POST'])
 def submit_todo_item():
@@ -27,13 +28,13 @@ def submit_todo_item():
     collectionTD.insert_one(todo)
 
     return redirect(url_for("formTodo"))
+=======
+>>>>>>> f3bb4ab (Modified Changes)
 
 @app.route('/submittodoitem', methods=['POST'])
 def submit_todo_item():
-    data = request.get_json()
-
-    item_name = data.get("itemName")
-    item_description = data.get("itemDescription")
+    item_name = request.form.get("item_name")
+    item_description = request.form.get("item_description")
 
     if not item_name or not item_description:
         return jsonify({"message": "Missing fields"}), 400
@@ -43,9 +44,9 @@ def submit_todo_item():
         "itemDescription": item_description
     }
 
-    collection.insert_one(todo)
+    collectionTD.insert_one(todo)
 
-    return jsonify({"message": "Todo item saved successfully"}), 201
+    return redirect(url_for("formTodo"))
 
 @app.route('/api', methods=['GET'])
 def get_data():
