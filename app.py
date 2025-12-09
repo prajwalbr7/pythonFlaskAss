@@ -8,6 +8,25 @@ app = Flask(__name__)
 client = MongoClient("mongodb://localhost:27017/")
 db = client["testdb"]
 collection = db["users"]
+collectionTD = db["TodoList"]
+
+
+@app.route('/submittodoitem', methods=['POST'])
+def submit_todo_item():
+    item_name = request.form.get("item_name")
+    item_description = request.form.get("item_description")
+
+    if not item_name or not item_description:
+        return jsonify({"message": "Missing fields"}), 400
+
+    todo = {
+        "itemName": item_name,
+        "itemDescription": item_description
+    }
+
+    collectionTD.insert_one(todo)
+
+    return redirect(url_for("formTodo"))
 
 @app.route('/api', methods=['GET'])
 def get_data():
@@ -21,6 +40,11 @@ def get_data():
 @app.route("/")
 def form():
     return render_template("form.html")
+
+
+@app.route("/todoPage")
+def formTodo():
+    return render_template("todoPage.html")
 
 @app.route("/submit", methods=["POST"])
 def submit():
